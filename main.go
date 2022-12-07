@@ -27,12 +27,14 @@ func main() {
 	fmt.Println(totalPoints)
 
 	// Day four
-	result, err := DayFour()
+	result, result2, err := DayFour()
 	if err != nil {
 		panic(err)
 	}
 
 	fmt.Println(result)
+	fmt.Println(result2)
+
 }
 
 func DayTwo() (points int, err error) {
@@ -136,7 +138,7 @@ func DayOne() (maxSum int, err error) {
 	return maxSum, nil
 }
 
-func DayFour() (totalSize int, err error) {
+func DayFour() (totalSize int, sizePartTwo int, err error) {
 	file, err := os.Open("./Input/DayFour/input.txt")
 	if err != nil {
 		panic(err)
@@ -160,9 +162,10 @@ func DayFour() (totalSize int, err error) {
 		secondEnd := secondParts[1]
 		firstArry, secondArry := makeArrays(firstBegin, firstEnd, secondBegin, secondEnd)
 		result = DayFourHelper(firstArry, secondArry, result)
+		sizePartTwo = DayFourHelperPartTwo(firstArry, secondArry, sizePartTwo)
 	}
 
-	return result, nil
+	return result, sizePartTwo, nil
 
 }
 
@@ -217,6 +220,21 @@ func DayFourHelper(first []int, second []int, result int) int {
 	return result
 }
 
+func DayFourHelperPartTwo(first []int, second []int, result int) int {
+
+	//Check first is contained in second
+	if isSubsetPartTwo(first, second) {
+		result++
+		return result
+	}
+	if isSubsetPartTwo(second, first) {
+		result++
+	}
+
+	//Check second is contained in first
+	return result
+}
+
 func isSubset(first []int, second []int) bool {
 	var myMap map[int]bool = make(map[int]bool, len(first))
 	for _, f := range first {
@@ -232,4 +250,21 @@ func isSubset(first []int, second []int) bool {
 	// second is fully contained in first
 	// second is a full subset of first
 	return true
+}
+
+func isSubsetPartTwo(first []int, second []int) bool {
+	var myMap map[int]bool = make(map[int]bool, len(first))
+	for _, f := range first {
+		myMap[f] = true
+	}
+
+	for _, s := range second {
+		if _, ok := myMap[s]; ok {
+			return true
+		}
+	}
+
+	// second is fully contained in first
+	// second is a full subset of first
+	return false
 }
